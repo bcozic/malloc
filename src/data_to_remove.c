@@ -6,7 +6,7 @@
 /*   By: bcozic <bcozic@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/06 03:26:39 by bcozic            #+#    #+#             */
-/*   Updated: 2018/11/06 08:57:24 by bcozic           ###   ########.fr       */
+/*   Updated: 2018/11/06 11:28:32 by bcozic           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ int			chr_allocation(void *ptr, t_zone *zone)
 			remove_packet(zone, current_packet->next, current_packet);
 			return(1);
 		}
+		current_packet = current_packet->next;
 	}
 	return(0);
 }

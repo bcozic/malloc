@@ -6,7 +6,7 @@
 /*   By: bcozic <bcozic@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/05 07:55:03 by bcozic            #+#    #+#             */
-/*   Updated: 2018/11/06 08:26:36 by bcozic           ###   ########.fr       */
+/*   Updated: 2018/11/06 11:33:56 by bcozic           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,6 @@ void			remove_struct_packet(t_mem *packet)
 static t_mem	*get_new_data_page()
 {
 	void	*map;
-	void	*tmp;
 	t_mem	*new_page;
 	t_mem	*new_packet;
 	
@@ -66,12 +65,16 @@ static t_mem	*get_new_data_page()
 	new_page->size = data->pages_size;
 	new_page->next = NULL;
 	new_packet = insert_new_packet(&(&data->data_page)->page, new_page);
-	tmp = ((char*)map + sizeof(t_mem));
-	new_packet = (t_mem*)tmp;
-	new_packet->ptr = new_page->ptr;
+	new_packet = (t_mem*)(void*)((char*)map + sizeof(t_mem));
+	new_packet->ptr = (char*)map + sizeof(t_mem) + sizeof(t_mem*);
 	new_packet->size = data->pages_size;
 	new_packet->next = NULL;
 	new_packet = insert_new_packet(&(&data->data_page)->packet, new_packet);
+//
+	check_address(new_page->ptr, &data->data_page, "Error get_new_data_page new_page->ptr", new_page->size);
+	check_address(new_packet->ptr, &data->data_page, "Error get_new_data_page new_packet->ptr", new_packet->size);
+//
+
 	return (new_packet);
 }
 

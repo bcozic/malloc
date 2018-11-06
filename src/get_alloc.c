@@ -6,7 +6,7 @@
 /*   By: bcozic <bcozic@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/05 04:11:20 by bcozic            #+#    #+#             */
-/*   Updated: 2018/11/06 09:18:27 by bcozic           ###   ########.fr       */
+/*   Updated: 2018/11/06 12:29:44 by bcozic           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ t_mem	*insert_new_packet(t_mem **list_ptr, t_mem *new_ptr)
 	current_ptr = *list_ptr;
 	if (!current_ptr)
 	{
-		current_ptr = new_ptr;
+		*list_ptr = new_ptr;
 		return (new_ptr);
 	}
 	if (current_ptr->ptr > new_ptr->ptr)
@@ -36,7 +36,7 @@ t_mem	*insert_new_packet(t_mem **list_ptr, t_mem *new_ptr)
 		else
 		{
 			new_ptr->next = current_ptr;
-			list_ptr = &new_ptr;
+			*list_ptr = new_ptr;
 			return(new_ptr);
 		}
 	}
@@ -91,13 +91,18 @@ t_mem		*get_new_page(t_zone *zone, size_t nb_pages)
 	new_page->next = NULL;
 	new_packet = (t_mem*)get_new_struct(sizeof(t_mem));
 	new_packet->ptr = new_page->ptr;
+	insert_new_packet(&zone->page, new_page);
 	new_packet->size = data->pages_size * nb_pages;
 	new_packet->next = NULL;
 	new_packet = insert_new_packet(&zone->packet, new_packet);
+
+//
+	check_address(new_packet->ptr, zone, "Error get_new_page new_packet->ptr", new_packet->size);
+//	
 	return (new_packet);
 }
 
-static void		div_packet(t_mem *packet, size_t size)
+static void		div_packet(t_mem *packet, size_t size, t_zone *zone)//delete zone
 {
 	t_mem	*new_packet;
 
@@ -107,6 +112,11 @@ static void		div_packet(t_mem *packet, size_t size)
 	new_packet->ptr = (char*)packet->ptr + size;
 	new_packet->size = packet->size - size;
 	packet->size = size;
+
+	//
+	check_address(new_packet->ptr, zone, "Error div_packet new_packet->ptr", new_packet->size);
+	check_address(new_packet, &data->data_page, "Error div_packet new_packet", sizeof(t_mem));
+	//
 }
 
 static void		add_used_packet(t_zone *zone, t_mem *packet)
@@ -127,7 +137,7 @@ static void		add_used_packet(t_zone *zone, t_mem *packet)
 static void		*get_mem(t_zone *zone, t_mem *previous, t_mem *packet, size_t size)
 {
 	if (packet->size > size)
-		div_packet(packet, size);
+		div_packet(packet, size, zone);
 	if (previous == NULL)
 		zone->packet = packet->next;
 	else
@@ -147,14 +157,16 @@ void	*get_alloc(size_t size, t_zone *zone)
 	if (zone->size_zone == data->pages_size)
 		nb_page = size / data->pages_size;
 	if (zone->page == NULL)
-		zone->page = get_new_page(zone, nb_page);
+		get_new_page(zone, nb_page);
 	current_packet = zone->packet;
 	previous_packet = NULL;
 	while (!current_packet || current_packet->size < size)
 	{
 		previous_packet = current_packet;
 		if (current_packet == NULL)
+		{
 			current_packet = get_new_page(zone, nb_page);
+		}
 		else
 			current_packet = current_packet->next;
 	}

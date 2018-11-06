@@ -6,7 +6,7 @@
 /*   By: bcozic <bcozic@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/02 22:37:53 by bcozic            #+#    #+#             */
-/*   Updated: 2018/11/06 09:09:58 by bcozic           ###   ########.fr       */
+/*   Updated: 2018/11/06 10:20:44 by bcozic           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,8 @@ typedef struct				s_data
 	t_zone					small;
 	t_zone					large;
 	t_zone					data_page;
+	int						free_status;
+	int	wait;
 }							t_data;
 
 extern	t_data* data;
@@ -51,14 +53,15 @@ extern	t_data* data;
 void						*ft_malloc(size_t size);
 void						*get_new_struct(size_t size);
 void						*get_alloc(size_t size, t_zone *zone);
-t_mem		*get_new_page(t_zone *zone, size_t nb_pages);
-void			remove_struct_packet(t_mem *packet);
-t_mem	*insert_new_packet(t_mem **list_ptr, t_mem *new_ptr);
+t_mem						*get_new_page(t_zone *zone, size_t nb_pages);
+void						remove_struct_packet(t_mem *packet);
+t_mem						*insert_new_packet(t_mem **list_ptr, t_mem *new_ptr);
 
 
-void		ft_free(void *ptr); 
+void						ft_free(void *ptr);
+void						auto_free(int free_status);
 void						free_at_exit(void) __attribute__ ((destructor));
-int	chr_allocation(void *ptr, t_zone *zone);
+int							chr_allocation(void *ptr, t_zone *zone);
 
 void	check_address(void *to_check, t_zone *zone, char *str, size_t size);
 
