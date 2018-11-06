@@ -6,7 +6,7 @@
 /*   By: bcozic <bcozic@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/02 22:39:26 by bcozic            #+#    #+#             */
-/*   Updated: 2018/11/06 08:41:12 by bcozic           ###   ########.fr       */
+/*   Updated: 2018/11/06 09:20:05 by bcozic           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,10 @@ int	main()
 	ft_printf("%s   %p\n", test, test);
 	ft_free(test);
 	test = (char*)ft_malloc(10);
+	ft_free(test);
 	ft_printf("%s   %p\n", test, test);
+	test = ft_malloc(88888888);
+	ft_free(test);
 
 	return(0);
 }

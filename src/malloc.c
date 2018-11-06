@@ -6,7 +6,7 @@
 /*   By: bcozic <bcozic@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/02 22:35:05 by bcozic            #+#    #+#             */
-/*   Updated: 2018/11/06 05:01:09 by bcozic           ###   ########.fr       */
+/*   Updated: 2018/11/06 09:12:44 by bcozic           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,9 @@ static void	init_data(void)
 	data = (t_data*)map;
 	ft_bzero(map, pages_size);
 	data->pages_size = pages_size;
-	data->tiny.max_size = TINY_PK;
-	data->small.max_size = SMALL_PK;
+	data->tiny.size_zone = TINY_PK;
+	data->small.size_zone = SMALL_PK;
+	data->large.size_zone = pages_size;
 	tmp = ((char*)map + sizeof(t_data));
 	data->data_page.page = (t_mem*)tmp;
 	data->data_page.page->ptr = map;
@@ -54,12 +55,14 @@ void		*ft_malloc(size_t size)
 	if (data->pages_size <= 0)
 		return (0);
 	if (size <= TINY_ZONE)
-		return (get_tiny_small(size, &data->tiny));
+		return (get_alloc(size, &data->tiny));
 	else if (size <= SMALL_ZONE)
-		return (get_tiny_small(size, &data->small));
-	// else
-	// 	return (get_large(size));
-	return (0);
+		return (get_alloc(size, &data->small));
+	else
+	{
+		ft_printf("large\n");
+		return (get_alloc(size, &data->large));
+	}
 }
 
 	// tab = (char*)mmap(NULL, (size_t)data.pages_size, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);

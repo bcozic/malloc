@@ -6,7 +6,7 @@
 /*   By: bcozic <bcozic@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/05 04:11:20 by bcozic            #+#    #+#             */
-/*   Updated: 2018/11/06 08:48:14 by bcozic           ###   ########.fr       */
+/*   Updated: 2018/11/06 09:18:27 by bcozic           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ t_mem		*get_new_page(t_zone *zone, size_t nb_pages)
 	new_page->next = NULL;
 	new_packet = (t_mem*)get_new_struct(sizeof(t_mem));
 	new_packet->ptr = new_page->ptr;
-	new_packet->size = data->pages_size;
+	new_packet->size = data->pages_size * nb_pages;
 	new_packet->next = NULL;
 	new_packet = insert_new_packet(&zone->packet, new_packet);
 	return (new_packet);
@@ -136,21 +136,25 @@ static void		*get_mem(t_zone *zone, t_mem *previous, t_mem *packet, size_t size)
 	return (packet->ptr);
 }
 
-void	*get_tiny_small(size_t size, t_zone *zone)
+void	*get_alloc(size_t size, t_zone *zone)
 {
 	t_mem	*previous_packet;
 	t_mem	*current_packet;
+	size_t	nb_page;
 
-	size = ((size / zone->max_size) + (size % zone->max_size ? 1 : 0)) * zone->max_size;
+	nb_page = 1;
+	size = ((size / zone->size_zone) + (size % zone->size_zone ? 1 : 0)) * zone->size_zone;
+	if (zone->size_zone == data->pages_size)
+		nb_page = size / data->pages_size;
 	if (zone->page == NULL)
-		zone->page = get_new_page(zone, 1);
+		zone->page = get_new_page(zone, nb_page);
 	current_packet = zone->packet;
 	previous_packet = NULL;
 	while (!current_packet || current_packet->size < size)
 	{
 		previous_packet = current_packet;
 		if (current_packet == NULL)
-			current_packet = get_new_page(zone, 1);
+			current_packet = get_new_page(zone, nb_page);
 		else
 			current_packet = current_packet->next;
 	}

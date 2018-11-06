@@ -6,7 +6,7 @@
 /*   By: bcozic <bcozic@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/06 02:18:32 by bcozic            #+#    #+#             */
-/*   Updated: 2018/11/06 07:03:33 by bcozic           ###   ########.fr       */
+/*   Updated: 2018/11/06 09:19:37 by bcozic           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ void		free_at_exit(void)
 	remove_all_page(data->small.page, 1);
 	remove_all_page(data->large.page, 1);
 	remove_all_page(data->data_page.page, 0);
+	ft_printf("all free\n");
 }
 
 void		ft_free(void *ptr)
