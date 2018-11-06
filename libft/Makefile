@@ -1,0 +1,77 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: bcozic <bcozic@student.42.fr>              +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2017/11/07 18:10:54 by bcozic            #+#    #+#              #
+#    Updated: 2018/11/05 01:02:04 by bcozic           ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+NO_COLOR = \x1b[0m
+
+GREEN = \x1b[32;01m
+
+RED = \x1b[31;01m
+
+CFLAGS = -Wall -Wextra -Werror -Weverything -g
+
+SRC_LIBFT = ft_abs.c ft_nbrlen.c ft_isint.c ft_memset.c\
+			ft_bzero.c ft_memcpy.c ft_memccpy.c ft_memmove.c\
+			ft_memchr.c ft_memcmp.c ft_strlen.c ft_tab_strlen.c\
+			ft_strdup.c ft_strcpy.c ft_strncpy.c ft_strcat.c\
+			ft_strncat.c ft_strlcat.c ft_strchr.c ft_strrchr.c\
+			ft_strstr.c ft_strnstr.c ft_strcmp.c ft_strncmp.c\
+			ft_atoi.c ft_atoi_unsigned.c ft_isalpha.c ft_isdigit.c\
+			ft_issignnb.c ft_isalnum.c ft_isascii.c ft_isprint.c\
+			ft_isspace.c ft_isnum.c ft_toupper.c ft_tolower.c\
+			ft_isstr_f.c ft_isstr_forf.c ft_memalloc.c ft_memdel.c\
+			ft_strnew.c ft_strdel.c ft_strclr.c ft_striter.c\
+			ft_striteri.c ft_strmap.c ft_strmapi.c ft_strequ.c\
+			ft_strnequ.c ft_strsub.c ft_strjoin.c ft_strjoinflush.c\
+			ft_strnjoinflush.c ft_strtrim.c ft_strsplit.c ft_itoa.c\
+			ft_putchar.c ft_putstr.c ft_putendl.c ft_putnbr.c\
+			ft_putchar_fd.c ft_putstr_fd.c ft_putendl_fd.c ft_putnbr_fd.c\
+			ft_lstnew.c ft_lstdelone.c ft_lstdel.c ft_lstadd.c\
+			ft_lstiter.c ft_lstmap.c ft_lstlen.c ft_realloc.c\
+			ft_strup.c get_next_line.c ft_free_and_reset.c
+
+SRC_PRINTF = ft_printf.c chrflags.c add_arg.c apply_flag.c\
+			 convert_nb.c flag_cara.c llitoa_base_mod.c ullitoa_base_mod.c\
+			 unicode.c\
+
+OBJ_LIBFT = $(addprefix obj/, $(SRC_LIBFT:.c=.o))
+
+OBJ_PRINTF = $(addprefix ft_printf/obj/, $(SRC_PRINTF:.c=.o))
+
+INC_PATH = includes/
+
+INCLUDES_PRINTF = $(INC_PATH)ft_printf_data.h\
+				  $(INC_PATH)ft_printf.h
+
+INCLUDE_LIBFT = $(INC_PATH)libft.h
+
+all : obj ft_printf/obj $(OBJ_LIBFT) $(OBJ_PRINTF)
+	@echo "$(GREEN)Libft OK$(NO_COLOR)"
+
+obj :
+	mkdir obj
+
+ft_printf/obj :
+	mkdir ft_printf/obj
+
+ft_printf/obj/%.o: ft_printf/src/%.c $(INCLUDE_LIBFT) $(INCLUDES_PRINTF)
+	gcc $(CFLAGS) -c $< -o $@ -I includes
+
+obj/%.o: src/%.c $(INCLUDE_LIBFT)
+	gcc $(CFLAGS) -c $< -o $@ -I includes
+
+clean :
+	rm -f $(OBJ_LIBFT) $(OBJ_PRINTF)
+	@echo "$(RED)Obj libft Deleted$(NO_COLOR)"
+
+re : clean all
+
+.PHONY : re all clean
