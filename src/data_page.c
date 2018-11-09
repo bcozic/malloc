@@ -6,7 +6,7 @@
 /*   By: bcozic <bcozic@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/05 07:55:03 by bcozic            #+#    #+#             */
-/*   Updated: 2018/11/06 11:33:56 by bcozic           ###   ########.fr       */
+/*   Updated: 2018/11/09 16:09:09 by bcozic           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,60 +14,44 @@
 
 void			remove_struct_packet(t_mem *packet)
 {
-	t_mem	*current_ptr;
-	t_mem	*to_remove;
-
+	check_page_size("remove_struct_packet");
+	packet->next = data->data_page.packet;
+	packet->size = sizeof(t_mem);
+	packet->ptr = packet;
+	data->data_page.packet = packet;
 	// to remove
-	check_address(packet, &data->data_page, "Error remove_struct_packet packet", sizeof(t_mem));
-	//end remove
-
-	ft_bzero(packet, sizeof(t_mem));
-	current_ptr = data->data_page.packet;
-	if (!current_ptr)
-		current_ptr = packet;
-	while (current_ptr->next && current_ptr->next < packet)
-		current_ptr = current_ptr->next;
-	if (current_ptr + current_ptr->size == packet)
-	{
-		current_ptr->size += packet->size;
-		// to remove
-		check_address(current_ptr->ptr, &data->data_page, "Error remove_struct_packet current_ptr->ptr", current_ptr->size);
-		//end remove
-	}
-	else if (packet + packet->size == current_ptr->next)
-	{
-		to_remove = current_ptr->next;
-		current_ptr->next = packet;
-		packet->size += to_remove->size;
-		packet->next = to_remove->next;
-		// to remove
-		check_address(packet->ptr, &data->data_page, "Error remove_struct_packet current_ptr->ptr", packet->size);
-		//end remove
-		remove_struct_packet(to_remove);
-	}
-	else
-	{
-		if (current_ptr->next)
-			packet->next = current_ptr->next->next;
-		current_ptr->next = packet;
-	}
+	check_address(packet->ptr, &data->data_page, "Error remove_struct_packet packet", packet->size);
+	// end remove
 }
 
 static t_mem	*get_new_data_page()
 {
+	//ft_printf("new page\n");
+	check_page_size("get_new_data_page");
+
 	void	*map;
 	t_mem	*new_page;
 	t_mem	*new_packet;
 	
-	map = mmap(NULL, data->pages_size, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
+	if (data->allocate_size + data->pages_size > data->rlimit_memlock.rlim_cur)
+	{
+		//ft_printf("alloc 1 %d %d\n", data->allocate_size + data->pages_size, data->rlimit_memlock.rlim_cur);
+		return (0);
+	}
+	map = mmap(NULL, data->pages_size * 3, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
+
+	//ft_printf("mmap 3 data pages\n");
+	data->allocate_size += data->pages_size * 3;
 	new_page = (t_mem*)map;
 	new_page->ptr = map;
-	new_page->size = data->pages_size;
+	new_page->size = data->pages_size * 3;
 	new_page->next = NULL;
-	new_packet = insert_new_packet(&(&data->data_page)->page, new_page);
+	new_page->next = data->data_page.page;
+	data->data_page.page = new_page;
+	//new_packet = insert_new_packet(&(&data->data_page)->page, new_page);
 	new_packet = (t_mem*)(void*)((char*)map + sizeof(t_mem));
-	new_packet->ptr = (char*)map + sizeof(t_mem) + sizeof(t_mem*);
-	new_packet->size = data->pages_size;
+	new_packet->ptr = (char*)map + sizeof(t_mem) + sizeof(t_mem);
+	new_packet->size = (data->pages_size * 3) - sizeof(t_mem) - sizeof(t_mem);
 	new_packet->next = NULL;
 	new_packet = insert_new_packet(&(&data->data_page)->packet, new_packet);
 //
@@ -80,13 +64,15 @@ static t_mem	*get_new_data_page()
 
 void			*get_new_struct(size_t size)
 {
+	check_page_size("get_new_struct");
 	t_mem	*data_packet;
 	t_mem	*previous;
 	void	*ret;
 
 	data_packet = data->data_page.packet;
 	if (!data_packet)
-		data->data_page.packet = get_new_data_page();
+		if (!(data->data_page.packet = get_new_data_page()))
+			return (0);
 	previous = NULL;
 	while (data_packet && data_packet->size < size)
 	{
@@ -94,7 +80,8 @@ void			*get_new_struct(size_t size)
 		data_packet = data_packet->next;
 	}
 	if (!data_packet)
-		data_packet = get_new_data_page();
+		if (!(data_packet = get_new_data_page()))
+			return (0);
 	ret = data_packet->ptr;
 	if (!(data_packet->size - size))
 	{
@@ -108,7 +95,6 @@ void			*get_new_struct(size_t size)
 		data_packet->ptr = (char*)data_packet->ptr + size;
 		data_packet->size -= size;
 		// to delete
-		check_address(ret, &data->data_page, "Error get_new_struct ret", size);
 		check_address(data_packet->ptr, &data->data_page, "Error get_new_struct data_packet->ptr", data_packet->size);
 		// end delete
 	}

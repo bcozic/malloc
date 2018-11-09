@@ -6,7 +6,7 @@
 #    By: bcozic <bcozic@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 18:10:54 by bcozic            #+#    #+#              #
-#    Updated: 2018/11/06 06:57:43 by bcozic           ###   ########.fr        #
+#    Updated: 2018/11/09 14:38:14 by bcozic           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,7 @@ GREEN=\x1b[32;01m
 RED=\x1b[31;01m
 
 SRC = malloc.c data_page.c get_alloc.c free.c\
-	  data_to_remove.c\
+	  data_to_remove.c realloc.c\
 		debug.c
 
 
