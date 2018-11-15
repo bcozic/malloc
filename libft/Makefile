@@ -6,7 +6,7 @@
 #    By: bcozic <bcozic@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 18:10:54 by bcozic            #+#    #+#              #
-#    Updated: 2018/11/05 01:02:04 by bcozic           ###   ########.fr        #
+#    Updated: 2018/11/15 19:58:46 by bcozic           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,7 +36,7 @@ SRC_LIBFT = ft_abs.c ft_nbrlen.c ft_isint.c ft_memset.c\
 			ft_putchar_fd.c ft_putstr_fd.c ft_putendl_fd.c ft_putnbr_fd.c\
 			ft_lstnew.c ft_lstdelone.c ft_lstdel.c ft_lstadd.c\
 			ft_lstiter.c ft_lstmap.c ft_lstlen.c ft_realloc.c\
-			ft_strup.c get_next_line.c ft_free_and_reset.c
+			ft_strup.c get_next_line.c ft_free_and_reset.c ft_putsizet.c
 
 SRC_PRINTF = ft_printf.c chrflags.c add_arg.c apply_flag.c\
 			 convert_nb.c flag_cara.c llitoa_base_mod.c ullitoa_base_mod.c\

@@ -6,11 +6,15 @@
 #    By: bcozic <bcozic@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 18:10:54 by bcozic            #+#    #+#              #
-#    Updated: 2018/11/09 14:38:14 by bcozic           ###   ########.fr        #
+#    Updated: 2018/11/14 19:01:00 by bcozic           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = libft_malloc.so
+ifeq ($(HOSTTYPE),)
+HOSTTYPE := $(shell uname -m)_$(shell uname -s)
+endif
+
+NAME = libft_malloc$(HOSTTYPE).so
 
 MAIN_TEST = a.out														####
 
@@ -23,8 +27,8 @@ GREEN=\x1b[32;01m
 RED=\x1b[31;01m
 
 SRC = malloc.c data_page.c get_alloc.c free.c\
-	  data_to_remove.c realloc.c\
-		debug.c
+	  data_to_remove.c realloc.c calloc.c show_alloc_mem.c\
+	  valloc.c fnc_packets.c
 
 
 
@@ -50,7 +54,7 @@ SRC_LIBFT = ft_abs.c ft_nbrlen.c ft_isint.c ft_memset.c ft_bzero.c\
 			ft_putstr_fd.c ft_putendl_fd.c ft_putnbr_fd.c ft_lstnew.c\
 			ft_lstdelone.c ft_lstdel.c ft_lstadd.c ft_lstiter.c\
 			ft_lstmap.c ft_lstlen.c ft_realloc.c ft_strup.c\
-			get_next_line.c ft_free_and_reset.c
+			get_next_line.c ft_free_and_reset.c ft_putsizet.c
 
 SRC_PRINTF = ft_printf.c chrflags.c add_arg.c apply_flag.c\
 			 convert_nb.c flag_cara.c llitoa_base_mod.c ullitoa_base_mod.c\
@@ -77,6 +81,8 @@ obj/%.o: src/%.c $(INCLUDE)
 
 $(NAME) : $(OBJ)
 	gcc $(CFLAGS) -shared -o $(NAME) $(OBJ) $(OBJ_LIBFT) $(OBJ_PRINTF)
+	rm -f libft_malloc.so
+	ln -s $(NAME) libft_malloc.so
 	@echo "$(GREEN)$(NAME) OK$(NO_COLOR)"
 
 $(MAIN_TEST) : main.c $(NAME)																			####
@@ -90,6 +96,7 @@ clean :
 
 fclean : clean
 	rm -f $(NAME)
+	rm -f libft_malloc.so
 	rm -f $(MAIN_TEST)																			####
 	@echo "$(RED)$(NAME) Deleted$(NO_COLOR)"
 	@echo "$(RED)$(MAIN_TEST) Deleted$(NO_COLOR)"

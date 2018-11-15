@@ -6,7 +6,7 @@
 /*   By: bcozic <bcozic@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 19:51:01 by bcozic            #+#    #+#             */
-/*   Updated: 2018/11/02 23:37:30 by bcozic           ###   ########.fr       */
+/*   Updated: 2018/11/11 09:34:47 by bcozic           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,5 +101,6 @@ void				*ft_realloc(void *str, size_t size, size_t new_size);
 void				ft_strup(char *str);
 int					get_next_line(const int fd, char **line);
 void				ft_free_and_reset(int nb, ...);
+void				ft_putsizet(size_t n);
 
 #endif

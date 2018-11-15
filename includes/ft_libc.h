@@ -6,23 +6,21 @@
 /*   By: bcozic <bcozic@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/02 22:37:53 by bcozic            #+#    #+#             */
-/*   Updated: 2018/11/09 15:38:33 by bcozic           ###   ########.fr       */
+/*   Updated: 2018/11/14 19:51:00 by bcozic           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-#include "libft.h"
-#include <unistd.h>
-#include <sys/mman.h>
-#include <sys/resource.h>
-#include <pthread.h>
 
 #ifndef FT_LIBC_H
 # define FT_LIBC_H
 
-# define TINY_ZONE	256
-# define SMALL_ZONE	4096
+# include "libft.h"
+# include <unistd.h>
+# include <sys/mman.h>
+# include <sys/resource.h>
+# include <pthread.h>
+
 # define TINY_PK	16
-# define SMALL_PK	64
+# define SMALL_PK	512
 
 typedef struct				s_mem
 {
@@ -50,24 +48,31 @@ typedef struct				s_data
 	size_t					allocate_size;
 }							t_data;
 
-extern	t_data* data;
-extern pthread_mutex_t mutex;
+extern						t_data* g_data;
+extern pthread_mutex_t		g_mutex;
 
-void						*ft_malloc(size_t size);
+void						*malloc(size_t size);
+int							init_data(size_t pages_size);
 void						*get_new_struct(size_t size);
-void						*get_alloc(size_t size, t_zone *zone, size_t nb_page);
+void						*get_alloc(size_t size, t_zone *zone,
+									size_t nb_page);
 t_mem						*get_new_page(t_zone *zone, size_t nb_pages);
 void						remove_struct_packet(t_mem *packet);
-t_mem						*insert_new_packet(t_mem **list_ptr, t_mem *new_ptr);
-
-
-void						ft_free(void *ptr);
-void						unmap_at_exit(void) __attribute__ ((destructor));
+t_mem						*insert_new_packet(t_mem **list_ptr,
+									t_mem *new_ptr);
+void						*get_mem(t_zone *zone, t_mem *previous,
+									t_mem *packet, size_t size);
+void						add_used_packet(t_zone *zone, t_mem *packet);
+int							div_packet(t_mem *packet, size_t size);
+void						free(void *ptr);
+void						unmap_at_exit(void) __attribute__((destructor));
 int							chr_allocation(void *ptr, t_zone *zone);
-
-void						*f_realloc(void *ptr, size_t size);
-
-void	check_address(void *to_check, t_zone *zone, char *str, size_t size);
-void	check_page_size(char *str);
+void						*realloc(void *ptr, size_t size);
+int							ret_free(void *ptr);
+void						*calloc(size_t count, size_t size);
+void						*valloc(size_t size);
+t_mem						*cut_packet(t_mem *packet, void *ptr);
+void						*reallocf(void *ptr, size_t size);
+void						show_alloc_mem(void);
 
 #endif

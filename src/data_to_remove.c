@@ -6,7 +6,7 @@
 /*   By: bcozic <bcozic@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/06 03:26:39 by bcozic            #+#    #+#             */
-/*   Updated: 2018/11/09 16:08:15 by bcozic           ###   ########.fr       */
+/*   Updated: 2018/11/14 19:17:27 by bcozic           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 static void	remove_packet(t_zone *zone, t_mem *packet, t_mem *prec)
 {
-	check_page_size("remove_packet");
 	if (prec == NULL)
 		zone->used_packet = packet->next;
 	else
@@ -25,23 +24,22 @@ static void	remove_packet(t_zone *zone, t_mem *packet, t_mem *prec)
 
 int			chr_allocation(void *ptr, t_zone *zone)
 {
-	check_page_size("chr_allocation");
-	t_mem	*current_packet;
-	t_mem	*previous;
+	t_mem *current_packet;
+	t_mem *previous;
 
 	current_packet = zone->used_packet;
 	previous = NULL;
 	if (!current_packet)
-		return(0);
+		return (0);
 	while (current_packet)
 	{
 		if (current_packet->ptr == ptr)
 		{
 			remove_packet(zone, current_packet, previous);
-			return(1);
+			return (1);
 		}
 		previous = current_packet;
 		current_packet = current_packet->next;
 	}
-	return(0);
+	return (0);
 }
