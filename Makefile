@@ -6,7 +6,7 @@
 #    By: bcozic <bcozic@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 18:10:54 by bcozic            #+#    #+#              #
-#    Updated: 2018/11/14 19:01:00 by bcozic           ###   ########.fr        #
+#    Updated: 2018/11/16 19:41:31 by bcozic           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,7 +28,7 @@ RED=\x1b[31;01m
 
 SRC = malloc.c data_page.c get_alloc.c free.c\
 	  data_to_remove.c realloc.c calloc.c show_alloc_mem.c\
-	  valloc.c fnc_packets.c
+	  valloc.c fnc_packets.c reallocf.c
 
 
 

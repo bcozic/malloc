@@ -6,7 +6,7 @@
 /*   By: bcozic <bcozic@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/02 22:37:53 by bcozic            #+#    #+#             */
-/*   Updated: 2018/11/14 19:51:00 by bcozic           ###   ########.fr       */
+/*   Updated: 2018/11/16 19:42:43 by bcozic           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ void						free(void *ptr);
 void						unmap_at_exit(void) __attribute__((destructor));
 int							chr_allocation(void *ptr, t_zone *zone);
 void						*realloc(void *ptr, size_t size);
+t_mem						*find_packet(void *ptr, t_zone *zone);
 int							ret_free(void *ptr);
 void						*calloc(size_t count, size_t size);
 void						*valloc(size_t size);

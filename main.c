@@ -6,13 +6,13 @@
 /*   By: bcozic <bcozic@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/02 22:39:26 by bcozic            #+#    #+#             */
-/*   Updated: 2018/11/14 19:44:41 by bcozic           ###   ########.fr       */
+/*   Updated: 2018/11/16 19:33:35 by bcozic           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_libc.h"
 #include "libft.h"
-//#include <stdlib.h>
+#include <stdlib.h>
 #include <unistd.h>
 
 
@@ -97,9 +97,8 @@ int	main()
 
 		char *test;
 		test = malloc(10);
-		ft_memcpy(test, "test\n", 5);
-		ft_putstr(test);
-		test = realloc(test + 5, 6024);
+		test = realloc(test, 1);
+		ft_putstr("test\n");
 		ft_printf("%p\n", test);
 		//test[0] = 42;
 		free(test);
